@@ -11,5 +11,6 @@ langchain_openai
 langchain_experimental
 streamlit
 fitz
-faiss
+faiss-cpu
+pymupdf
 -e .
