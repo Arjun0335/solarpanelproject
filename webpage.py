@@ -1,6 +1,6 @@
 import streamlit as st
 import openai
-import fitz  # PyMuPDF for PDF extraction
+import pymupdf  # PyMuPDF for PDF extraction
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
@@ -31,7 +31,7 @@ index = pinecone.Index(index_name)
 # PDF Text Extraction
 def extract_text_from_pdf(pdf_path):
     try:
-        doc = fitz.open(pdf_path)
+        doc = pymupdf.open(pdf_path)
         text = "\n".join([page.get_text("text") for page in doc])
         return text
     except Exception as e:
