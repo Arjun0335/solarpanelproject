@@ -10,7 +10,6 @@ langchain_community
 langchain_openai
 langchain_experimental
 streamlit
-fitz
 faiss-cpu
 pymupdf
 -e .
