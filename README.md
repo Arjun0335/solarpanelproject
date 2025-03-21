@@ -1,1 +1,2 @@
 # solarpanelproject
+In this Project I developed a chatbot which can give information to user based on solar panel related questions. Due to issue in loading libraries in streamlit and in my device i am not able to host the page. I have used Pinecone API for pipeline to help sharing of information and splitting data in text chunks. I have also used OPENAI api to provide relevant asnwers from uploaded PDF.
