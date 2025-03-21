@@ -3,6 +3,7 @@ import openai
 import pypdf
 import numpy as np
 from sentence_transformers import SentenceTransformer
+import huggingface_hub
 import pinecone
 import os
 from sklearn.neighbors import NearestNeighbors 
