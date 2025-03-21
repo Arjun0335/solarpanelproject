@@ -11,5 +11,5 @@ langchain_openai
 langchain_experimental
 streamlit
 scikit-learn
-huggingface_hub
+huggingface_hub==0.15.1
 -e .
