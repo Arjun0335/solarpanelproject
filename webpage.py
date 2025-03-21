@@ -1,7 +1,7 @@
 import streamlit as st
 import openai
 import pypdf  # Use pypdf instead of PyMuPDF (fitz)
-import faiss-cpu
+import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import pinecone
