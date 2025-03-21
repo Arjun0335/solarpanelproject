@@ -11,5 +11,4 @@ langchain_openai
 langchain_experimental
 streamlit
 faiss-cpu
-pymupdf
 -e .
