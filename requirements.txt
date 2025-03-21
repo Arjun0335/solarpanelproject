@@ -11,4 +11,5 @@ langchain_openai
 langchain_experimental
 streamlit
 scikit-learn
+huggingface_hub
 -e .
