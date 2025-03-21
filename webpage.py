@@ -1,11 +1,11 @@
 import streamlit as st
 import openai
-import pypdf  # Use pypdf instead of PyMuPDF (fitz)
-import faiss
+import pypdf
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import pinecone
 import os
+from sklearn.neighbors import NearestNeighbors 
 
 # OpenRouter API Key
 API_KEY = os.getenv("OPENROUTER_API_KEY")
@@ -46,9 +46,9 @@ pdf_text = "\n".join(pdf_texts)
 sentences = pdf_text.split(". ")
 embeddings = model.encode(sentences)
 
-# Store in FAISS
-faiss_index = faiss.IndexFlatL2(embeddings.shape[1])
-faiss_index.add(np.array(embeddings, dtype=np.float32))  # Ensure correct type
+# Nearest Neighbors Model (Replaces FAISS)
+knn = NearestNeighbors(n_neighbors=3, metric="cosine")
+knn.fit(embeddings)
 
 # Store in Pinecone
 pinecone_vectors = [
@@ -57,18 +57,19 @@ pinecone_vectors = [
 ]
 index.upsert(vectors=pinecone_vectors)
 
-# Retrieve context function
+# Retrieve context function (using Nearest Neighbors)
 def retrieve_context(query, top_k=3):
     query_embedding = model.encode([query])
-    _, faiss_indices = faiss_index.search(np.array(query_embedding, dtype=np.float32), top_k)
-    faiss_results = [sentences[i] for i in faiss_indices[0]]
+    distances, indices = knn.kneighbors(query_embedding, n_neighbors=top_k)
+    
+    knn_results = [sentences[i] for i in indices[0]]
 
     pinecone_results = index.query(
         vector=query_embedding.tolist()[0], top_k=top_k, include_metadata=True
     )
     pinecone_texts = [match["metadata"]["sentence"] for match in pinecone_results.get("matches", []) if "metadata" in match]
 
-    return "\n".join(set(faiss_results + pinecone_texts))
+    return "\n".join(set(knn_results + pinecone_texts))
 
 # OpenAI Response
 def get_ai_response(prompt):
