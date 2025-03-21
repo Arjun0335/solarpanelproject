@@ -1,13 +1,13 @@
 import streamlit as st
 import openai
-import pymupdf  # PyMuPDF for PDF extraction
+import pypdf  # Use pypdf instead of PyMuPDF (fitz)
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import pinecone
 import os
 
-# OpenRouter API Key (Ensure it's set in the environment)
+# OpenRouter API Key
 API_KEY = os.getenv("OPENROUTER_API_KEY")
 if not API_KEY:
     st.error("❌ OpenRouter API Key not found! Set OPENROUTER_API_KEY in environment.")
@@ -28,11 +28,12 @@ if index_name not in pinecone.list_indexes():
     pinecone.create_index(index_name, dimension=384)  # 384 is the embedding size of MiniLM
 index = pinecone.Index(index_name)
 
-# PDF Text Extraction
+# PDF Text Extraction using pypdf
 def extract_text_from_pdf(pdf_path):
     try:
-        doc = pymupdf.open(pdf_path)
-        text = "\n".join([page.get_text("text") for page in doc])
+        with open(pdf_path, "rb") as file:
+            reader = pypdf.PdfReader(file)
+            text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
         return text
     except Exception as e:
         st.error(f"Error extracting text from {pdf_path}: {e}")
